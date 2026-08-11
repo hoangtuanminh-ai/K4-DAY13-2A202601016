@@ -1,19 +1,19 @@
 alerts:
-  - name: TODO_alert_1
-    severity: TODO
-    condition: TODO
+  - name: high_latency_p95
+    severity: critical
+    condition: p95(response_sent.latency_ms) > 3000ms, sustained for 5m
     type: symptom-based
-    owner: TODO
+    owner: dashboard-slo-oncall
     runbook: docs/alerts.md#alert-1
-  - name: TODO_alert_2
-    severity: TODO
-    condition: TODO
+  - name: elevated_error_rate
+    severity: critical
+    condition: (count(request_failed) / count(request_received)) * 100 > 2%, sustained for 5m
     type: symptom-based
-    owner: TODO
+    owner: dashboard-slo-oncall
     runbook: docs/alerts.md#alert-2
-  - name: TODO_alert_3
-    severity: TODO
-    condition: TODO
+  - name: quality_score_degradation
+    severity: medium
+    condition: mean(response_sent.quality_score) < 0.75, sustained for 15m
     type: symptom-based
-    owner: TODO
+    owner: dashboard-slo-oncall
     runbook: docs/alerts.md#alert-3
