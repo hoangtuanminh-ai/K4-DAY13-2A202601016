@@ -4,7 +4,7 @@ slis:
   latency_p95_ms:
     objective: 3000
     target: 99.5
-    note: Replace with your group's target
+    note: Matches dashboard.yaml latency panel threshold (P95 <= 3000ms); 99.5% of 28d requests must stay under it.
   error_rate_pct:
     objective: 2
     target: 99.0

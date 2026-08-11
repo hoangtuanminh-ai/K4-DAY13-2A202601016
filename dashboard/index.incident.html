@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Day 13 AI Observability Dashboard</title>
+<style>
+  :root {
+    --surface-1: #fcfcfb;
+    --page: #f9f9f7;
+    --text-primary: #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted: #898781;
+    --grid: #e1e0d9;
+    --border: rgba(11,11,11,0.10);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --surface-1: #1a1a19;
+      --page: #0d0d0d;
+      --text-primary: #ffffff;
+      --text-secondary: #c3c2b7;
+      --text-muted: #898781;
+      --grid: #2c2c2a;
+      --border: rgba(255,255,255,0.10);
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 24px; background: var(--page); color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  header { margin-bottom: 20px; }
+  h1 { margin: 0 0 4px; font-size: 22px; }
+  .meta { color: var(--text-secondary); font-size: 13px; }
+  .meta span { color: var(--text-muted); }
+  .grid-panels {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(560px, 1fr)); gap: 16px;
+  }
+  .panel {
+    background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px;
+    padding: 16px 16px 12px;
+  }
+  .panel-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+  .panel-title { font-size: 15px; font-weight: 600; }
+  .panel-unit { font-size: 12px; color: var(--text-muted); }
+  .tiles { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+  .tile { flex: 1; min-width: 110px; }
+  .tile-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .02em; }
+  .tile-value { font-size: 22px; font-weight: 600; }
+  .tile-sub { font-size: 11px; color: var(--text-secondary); }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600;
+    border: 1px solid; border-radius: 999px; padding: 2px 8px; margin-top: 4px;
+  }
+  .badge .dot { width: 6px; height: 6px; border-radius: 50%; }
+  .chart { width: 100%; height: auto; display: block; }
+  .grid { stroke: var(--grid); stroke-width: 1; }
+  .baseline { stroke: var(--text-muted); stroke-width: 1; }
+  .axis-label { fill: var(--text-muted); font-size: 10px; }
+  .value-label { fill: var(--text-secondary); font-size: 10px; font-weight: 600; }
+  .threshold { stroke: #d03b3b; stroke-width: 1.5; stroke-dasharray: 4 3; }
+  .threshold-label { fill: #d03b3b; font-size: 10px; font-weight: 600; }
+  footer { margin-top: 20px; font-size: 12px; color: var(--text-muted); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Day 13 AI Observability — Dashboard</h1>
+  <div class="meta">
+    Time range: <span>2026-08-11 08:25 → 09:25 UTC</span> (last 60 min) ·
+    Refresh contract: <span>30s</span> (regenerate: <code>python scripts/build_dashboard.py</code>) ·
+    Generated: <span>2026-08-11 09:25:23 UTC</span> · Source: <span>data/logs.jsonl</span>
+  </div>
+</header>
+<div class="grid-panels">
+
+  <section class="panel">
+    <div class="panel-header"><div class="panel-title">1. Latency percentiles</div><div class="panel-unit">ms</div></div>
+    <svg viewBox="0 0 560 200" class="chart" role="img"><line x1="56" y1="24.0" x2="540" y2="24.0" class="grid"/><text x="48" y="28.0" class="axis-label" text-anchor="end">3,600 ms</text><line x1="56" y1="71.3" x2="540" y2="71.3" class="grid"/><text x="48" y="75.3" class="axis-label" text-anchor="end">2,400 ms</text><line x1="56" y1="118.7" x2="540" y2="118.7" class="grid"/><text x="48" y="122.7" class="axis-label" text-anchor="end">1,200 ms</text><line x1="56" y1="166.0" x2="540" y2="166.0" class="grid"/><text x="48" y="170.0" class="axis-label" text-anchor="end">0 ms</text><line x1="56" y1="47.7" x2="540" y2="47.7" class="threshold"/><text x="540" y="43.7" class="threshold-label" text-anchor="end">SLO P95 ≤ 3,000 ms</text><path d="M112.7,166.0 L112.7,164.1 Q112.7,160.1 116.7,160.1 L156.7,160.1 Q160.7,160.1 160.7,164.1 L160.7,166.0 Z" fill="#86b6ef"><title>P50: 150 ms</title></path><text x="136.7" y="152.1" class="value-label" text-anchor="middle">150 ms</text><text x="136.7" y="184.0" class="axis-label" text-anchor="middle">P50</text><path d="M274.0,166.0 L274.0,65.4 Q274.0,61.4 278.0,61.4 L318.0,61.4 Q322.0,61.4 322.0,65.4 L322.0,166.0 Z" fill="#2a78d6"><title>P95: 2,651 ms</title></path><text x="298.0" y="53.4" class="value-label" text-anchor="middle">2,651 ms</text><text x="298.0" y="184.0" class="axis-label" text-anchor="middle">P95</text><path d="M435.3,166.0 L435.3,65.4 Q435.3,61.4 439.3,61.4 L479.3,61.4 Q483.3,61.4 483.3,65.4 L483.3,166.0 Z" fill="#104281"><title>P99: 2,651 ms</title></path><text x="459.3" y="53.4" class="value-label" text-anchor="middle">2,651 ms</text><text x="459.3" y="184.0" class="axis-label" text-anchor="middle">P99</text><line x1="56" y1="166.0" x2="540" y2="166.0" class="baseline"/></svg>
+    <span class="badge" style="color:#0ca30c;border-color:#0ca30c"><span class="dot" style="background:#0ca30c"></span>PASS · P95 2,651 ms vs ≤3,000 ms</span>
+  </section>
+
+  <section class="panel">
+    <div class="panel-header"><div class="panel-title">2. Request traffic</div><div class="panel-unit">requests/min</div></div>
+    <div class="tiles">
+      <div class="tile"><div class="tile-label">Total requests</div><div class="tile-value">30</div><div class="tile-sub"></div></div>
+      <div class="tile"><div class="tile-label">Rate</div><div class="tile-value">0.50/min</div><div class="tile-sub"></div></div>
+    </div>
+    <svg viewBox="0 0 560 200" class="chart" role="img"><line x1="56" y1="24.0" x2="540" y2="24.0" class="grid"/><text x="48" y="28.0" class="axis-label" text-anchor="end">31</text><line x1="56" y1="71.3" x2="540" y2="71.3" class="grid"/><text x="48" y="75.3" class="axis-label" text-anchor="end">21</text><line x1="56" y1="118.7" x2="540" y2="118.7" class="grid"/><text x="48" y="122.7" class="axis-label" text-anchor="end">10</text><line x1="56" y1="166.0" x2="540" y2="166.0" class="grid"/><text x="48" y="170.0" class="axis-label" text-anchor="end">0</text><line x1="56" y1="161.4" x2="540" y2="161.4" class="threshold"/><text x="540" y="157.4" class="threshold-label" text-anchor="end">SLO ≥ 1 req/min</text><path d="M163.0,166.0 L163.0,51.7 Q163.0,47.7 167.0,47.7 L187.0,47.7 Q191.0,47.7 191.0,51.7 L191.0,166.0 Z" fill="#2a78d6"><title>09:24: 26</title></path><text x="177.0" y="184.0" class="axis-label" text-anchor="middle">09:24</text><path d="M405.0,166.0 L405.0,151.8 Q405.0,147.8 409.0,147.8 L429.0,147.8 Q433.0,147.8 433.0,151.8 L433.0,166.0 Z" fill="#2a78d6"><title>09:25: 4</title></path><text x="419.0" y="184.0" class="axis-label" text-anchor="middle">09:25</text><line x1="56" y1="166.0" x2="540" y2="166.0" class="baseline"/></svg>
+  </section>
+
+  <section class="panel">
+    <div class="panel-header"><div class="panel-title">3. Error rate and breakdown</div><div class="panel-unit">percent</div></div>
+    <div class="tiles">
+      <div class="tile"><div class="tile-label">Error rate</div><div class="tile-value">0.00%</div><div class="tile-sub">0 failed / 30 received</div><span class="badge" style="color:#0ca30c;border-color:#0ca30c"><span class="dot" style="background:#0ca30c"></span>PASS · ≤2%</span></div>
+    </div>
+    <svg viewBox="0 0 560 80" class="chart" role="img"><text x="280.0" y="40" class="axis-label" text-anchor="middle">Không có lỗi trong cửa sổ 60 phút</text></svg>
+  </section>
+
+  <section class="panel">
+    <div class="panel-header"><div class="panel-title">4. Cost over time</div><div class="panel-unit">usd</div></div>
+    <div class="tiles">
+      <div class="tile"><div class="tile-label">Total cost</div><div class="tile-value">$0.0582</div><div class="tile-sub"></div><span class="badge" style="color:#0ca30c;border-color:#0ca30c"><span class="dot" style="background:#0ca30c"></span>PASS · ≤$2.5</span></div>
+    </div>
+    <svg viewBox="0 0 560 200" class="chart" role="img"><line x1="56" y1="24.0" x2="540" y2="24.0" class="grid"/><text x="48" y="28.0" class="axis-label" text-anchor="end">$0.0582</text><line x1="56" y1="71.3" x2="540" y2="71.3" class="grid"/><text x="48" y="75.3" class="axis-label" text-anchor="end">$0.0388</text><line x1="56" y1="118.7" x2="540" y2="118.7" class="grid"/><text x="48" y="122.7" class="axis-label" text-anchor="end">$0.0194</text><line x1="56" y1="166.0" x2="540" y2="166.0" class="grid"/><text x="48" y="170.0" class="axis-label" text-anchor="end">$0.0000</text><path d="M163.0,166.0 L163.0,51.7 Q163.0,47.7 167.0,47.7 L187.0,47.7 Q191.0,47.7 191.0,51.7 L191.0,166.0 Z" fill="#2a78d6"><title>09:24: $0.0485</title></path><text x="177.0" y="184.0" class="axis-label" text-anchor="middle">09:24</text><path d="M405.0,166.0 L405.0,146.4 Q405.0,142.4 409.0,142.4 L429.0,142.4 Q433.0,142.4 433.0,146.4 L433.0,166.0 Z" fill="#2a78d6"><title>09:25: $0.0097</title></path><text x="419.0" y="184.0" class="axis-label" text-anchor="middle">09:25</text><line x1="56" y1="166.0" x2="540" y2="166.0" class="baseline"/></svg>
+  </section>
+
+  <section class="panel">
+    <div class="panel-header"><div class="panel-title">5. Input and output tokens</div><div class="panel-unit">tokens</div></div>
+    <svg viewBox="0 0 560 200" class="chart" role="img"><line x1="56" y1="24.0" x2="540" y2="24.0" class="grid"/><text x="48" y="28.0" class="axis-label" text-anchor="end">60,000</text><line x1="56" y1="71.3" x2="540" y2="71.3" class="grid"/><text x="48" y="75.3" class="axis-label" text-anchor="end">40,000</text><line x1="56" y1="118.7" x2="540" y2="118.7" class="grid"/><text x="48" y="122.7" class="axis-label" text-anchor="end">20,000</text><line x1="56" y1="166.0" x2="540" y2="166.0" class="grid"/><text x="48" y="170.0" class="axis-label" text-anchor="end">0</text><line x1="56" y1="47.7" x2="540" y2="47.7" class="threshold"/><text x="540" y="43.7" class="threshold-label" text-anchor="end">SLO ≤ 50,000 tokens</text><path d="M153.0,166.0 L153.0,166.0 Q153.0,162.0 157.0,162.0 L197.0,162.0 Q201.0,162.0 201.0,166.0 L201.0,166.0 Z" fill="#2a78d6"><title>tokens_in: 1,710</title></path><text x="177.0" y="154.0" class="value-label" text-anchor="middle">1,710</text><text x="177.0" y="184.0" class="axis-label" text-anchor="middle">tokens_in</text><path d="M395.0,166.0 L395.0,161.6 Q395.0,157.6 399.0,157.6 L439.0,157.6 Q443.0,157.6 443.0,161.6 L443.0,166.0 Z" fill="#eb6834"><title>tokens_out: 3,537</title></path><text x="419.0" y="149.6" class="value-label" text-anchor="middle">3,537</text><text x="419.0" y="184.0" class="axis-label" text-anchor="middle">tokens_out</text><line x1="56" y1="166.0" x2="540" y2="166.0" class="baseline"/></svg>
+    <div class="tiles">
+      <span class="badge" style="color:#0ca30c;border-color:#0ca30c"><span class="dot" style="background:#0ca30c"></span>PASS · tokens_in ≤ 50,000</span>
+      <span class="badge" style="color:#0ca30c;border-color:#0ca30c"><span class="dot" style="background:#0ca30c"></span>PASS · tokens_out ≤ 50,000</span>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-header"><div class="panel-title">6. Quality proxy</div><div class="panel-unit">score 0–1</div></div>
+    <div class="tiles">
+      <div class="tile"><div class="tile-label">Mean quality_score</div><div class="tile-value">0.88</div><div class="tile-sub"></div><span class="badge" style="color:#0ca30c;border-color:#0ca30c"><span class="dot" style="background:#0ca30c"></span>PASS · ≥0.75</span></div>
+    </div>
+    <svg viewBox="0 0 560 90" class="chart" role="img">
+  <rect x="24" y="30" width="512" height="18" rx="9" fill="#b7d3f6"/>
+  <rect x="24" y="30" width="450.6" height="18" rx="9" fill="#0ca30c"><title>Quality avg: 0.88</title></rect>
+  <line x1="408.0" y1="24" x2="408.0" y2="54" class="threshold"/>
+  <text x="408.0" y="18" class="threshold-label" text-anchor="middle">SLO ≥ 0.75</text>
+  <text x="24" y="70" class="axis-label">0.0</text>
+  <text x="536" y="70" class="axis-label" text-anchor="end">1.0</text>
+</svg>
+  </section>
+
+</div>
+<footer>
+  Contract: config/dashboard.yaml · SLO: config/slo.yaml · Validator: <code>python scripts/validate_dashboard.py</code>
+</footer>
+</body>
+</html>
