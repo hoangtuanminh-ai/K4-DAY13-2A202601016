@@ -2,10 +2,15 @@
 
 ## 1. Thông tin nhóm
 
-- Tên nhóm:
-- Repository URL:
+- Tên nhóm:B2-2
+- Repository URL:https://github.com/hoangtuanminh-ai/Day13-K4-B2-2.git
 - Commit SHA cuối:
-- Thành viên và vai trò:
+### Thành viên và vai trò
+
+* **Lê Văn Tuấn** (Lead): Tracing & Prompt Version
+* **Hoàng Tuấn Minh**: Incident, Report & Demo
+* **Cao Hương Giang**: Logging & PII
+* **Vũ Hoàng Việt**: Dashboard, SLO & Alert
 
 ## 2. Kết quả kỹ thuật
 
