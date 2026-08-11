@@ -133,3 +133,38 @@ def test_chat_logs_safe_metadata_without_context_leak(
     assert {event["env"] for event in received} == {"test"}
     assert all("first-user" not in json.dumps(event) for event in received)
     assert all("second-user" not in json.dumps(event) for event in received)
+
+
+def test_structlog_redacts_required_pii_before_jsonl_write(
+    monkeypatch, tmp_path: Path
+) -> None:
+    log_path = tmp_path / "logs.jsonl"
+    monkeypatch.setattr(logging_config, "LOG_PATH", log_path)
+    raw_values = (
+        "student@vinuni.edu.vn",
+        "090 123 4567",
+        "001234567890",
+        "4111 1111 1111 1111",
+    )
+    message = (
+        "Email student@vinuni.edu.vn; phone 090 123 4567; "
+        "CCCD 001234567890; card 4111 1111 1111 1111"
+    )
+
+    logging_config.get_logger().info(
+        "redaction_probe",
+        service="api",
+        correlation_id="req-redaction",
+        payload={"note": message},
+    )
+
+    raw_log = log_path.read_text(encoding="utf-8")
+    for value in raw_values:
+        assert value not in raw_log
+    for marker in (
+        "[REDACTED_EMAIL]",
+        "[REDACTED_PHONE_VN]",
+        "[REDACTED_CCCD]",
+        "[REDACTED_CREDIT_CARD]",
+    ):
+        assert marker in raw_log
