@@ -3,8 +3,8 @@
 ## 1. Thông tin nhóm
 
 - Tên nhóm: B2-2
-- Repository URL: https://github.com/hoangtuanminh-ai/Day13-K4-B2-2.git
-- Commit SHA cuối: (cập nhật sau khi push)
+- Repository URL: https://github.com/hoangtuanminh-ai/K4-DAY13-2A202601016.git
+- Commit SHA cuối: 9f06022
 ### Thành viên và vai trò
 
 * **Lê Văn Tuấn** (2A202601016): Tracing & Prompt Version (Lead)
