@@ -92,3 +92,44 @@ def test_chat_propagates_client_correlation_id(monkeypatch, tmp_path: Path) -> N
     assert {event["correlation_id"] for event in _read_api_events(log_path)} == {
         "req-client-01"
     }
+
+
+def test_chat_logs_safe_metadata_without_context_leak(
+    monkeypatch, tmp_path: Path
+) -> None:
+    log_path = tmp_path / "logs.jsonl"
+    monkeypatch.setattr(logging_config, "LOG_PATH", log_path)
+    monkeypatch.setenv("APP_ENV", "test")
+
+    with TestClient(app) as client:
+        client.post(
+            "/chat",
+            json=_chat_payload(
+                user_id="first-user", session_id="first-session", feature="qa"
+            ),
+        )
+        client.post(
+            "/chat",
+            json=_chat_payload(
+                user_id="second-user",
+                session_id="second-session",
+                feature="summary",
+            ),
+        )
+
+    received = [
+        event for event in _read_api_events(log_path) if event["event"] == "request_received"
+    ]
+    assert [event["user_id_hash"] for event in received] == [
+        hash_user_id("first-user"),
+        hash_user_id("second-user"),
+    ]
+    assert [event["session_id"] for event in received] == [
+        "first-session",
+        "second-session",
+    ]
+    assert [event["feature"] for event in received] == ["qa", "summary"]
+    assert {event["model"] for event in received} == {"claude-sonnet-4-5"}
+    assert {event["env"] for event in received} == {"test"}
+    assert all("first-user" not in json.dumps(event) for event in received)
+    assert all("second-user" not in json.dumps(event) for event in received)
