@@ -93,6 +93,7 @@ if c2.button("Disable", use_container_width=True):
 st.sidebar.subheader("2. Chạy load test")
 concurrency = st.sidebar.slider("Concurrency", 1, 10, 5)
 if st.sidebar.button("Run load test", use_container_width=True, type="primary"):
+    import concurrent.futures
     payloads = [
         json.loads(line)
         for line in SAMPLE_QUERIES.read_text(encoding="utf-8").splitlines()
@@ -101,16 +102,60 @@ if st.sidebar.button("Run load test", use_container_width=True, type="primary"):
     progress = st.sidebar.progress(0.0, text=f"Đang gửi {len(payloads)} request...")
     sent = 0
     with httpx.Client(timeout=30.0) as client:
-        for payload in payloads:
+        def send_req(p):
             try:
-                call_with_retry(lambda p=payload: client.post(f"{API_BASE}/chat", json=p))
-            except Exception:  # noqa: BLE001
+                call_with_retry(lambda p=p: client.post(f"{API_BASE}/chat", json=p))
+            except Exception:
                 pass
-            sent += 1
-            progress.progress(sent / len(payloads))
-    st.sidebar.success(f"Đã gửi {sent}/{len(payloads)} request (concurrency hiển thị = số song song mô phỏng; xem scripts/load_test.py --concurrency {concurrency} để chạy thật ở terminal)")
+                
+        with concurrent.futures.ThreadPoolExecutor(max_workers=concurrency) as executor:
+            futures = [executor.submit(send_req, p) for p in payloads]
+            for _ in concurrent.futures.as_completed(futures):
+                sent += 1
+                progress.progress(sent / max(1, len(payloads)))
+                
+    st.sidebar.success(f"Đã gửi {sent}/{len(payloads)} request (với Concurrency={concurrency})")
     time.sleep(0.5)
     st.rerun()
+
+st.sidebar.subheader("3. Chạy Đề Thi (Challenge)")
+if st.sidebar.button("Run Challenge", use_container_width=True, type="primary"):
+    from app.challenge import load_challenge, ordered_queries
+    import concurrent.futures
+    challenge = load_challenge()
+    payloads = ordered_queries(challenge)
+    progress = st.sidebar.progress(0.0, text=f"Đang gửi {len(payloads)} request Đề Thi...")
+    sent = 0
+    with httpx.Client(timeout=30.0) as client:
+        try:
+            call_with_retry(lambda: client.post(f"{API_BASE}/incidents/{challenge.incident}/enable"))
+        except Exception:
+            pass
+            
+        def send_req(p):
+            try:
+                call_with_retry(lambda p=p: client.post(f"{API_BASE}/chat", json=p))
+            except Exception:
+                pass
+                
+        with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+            futures = [executor.submit(send_req, p) for p in payloads]
+            for _ in concurrent.futures.as_completed(futures):
+                sent += 1
+                progress.progress(sent / max(1, len(payloads)))
+                
+    st.sidebar.success(f"Đã kích hoạt {challenge.incident} và gửi {sent}/{len(payloads)} request Đề Thi (Concurrency=5)")
+    time.sleep(0.5)
+    st.rerun()
+
+
+st.sidebar.divider()
+st.sidebar.subheader("4. Cấu hình hiển thị (SLO)")
+mode = st.sidebar.radio("Ngưỡng chấm điểm P95", ["Practice (3000ms)", "Challenge (2000ms)"])
+if "Challenge" in mode:
+    THRESHOLDS["latency_p95_ms"] = 2000
+else:
+    THRESHOLDS["latency_p95_ms"] = 3000
 
 st.sidebar.divider()
 st.sidebar.caption(

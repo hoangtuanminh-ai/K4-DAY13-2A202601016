@@ -11,11 +11,15 @@ CORPUS = {
 }
 
 
+import threading
+DB_LOCK = threading.Lock()
+
 def retrieve(message: str) -> list[str]:
     if STATE["tool_fail"]:
         raise RuntimeError("Vector store timeout")
     if STATE["rag_slow"]:
-        time.sleep(2.5)
+        with DB_LOCK:
+            time.sleep(2.5)
     lowered = message.lower()
     for key, docs in CORPUS.items():
         if key in lowered:
