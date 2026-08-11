@@ -23,16 +23,18 @@
 
 - Evidence correlation ID:
 - Evidence PII redaction:
-- Evidence trace waterfall:
-- Giải thích một span đáng chú ý:
+- Evidence trace waterfall: evidence/trace_waterfall.png
+- Giải thích một span đáng chú ý: Span `run` (generation) là span tốn thời gian nhất (~150ms), đây là bước agent gọi LLM (FakeLLM) để sinh câu trả lời. Bên trong span này chứa thông tin `prompt_version`, `prompt_label`, `doc_count`, `cost_usd` — cho thấy toàn bộ pipeline từ lấy tài liệu (RAG) đến sinh kết quả.
 
 ## 4. Prompt versioning
 
-- Prompt name:
-- Version/label baseline:
-- Version/label candidate:
+- Prompt name: day13-chat
+- Version/label baseline: Version 1 / label `baseline` + `production`
+- Version/label candidate: Version 2 / label `candidate`
 - Trace ID của mỗi version:
-- Bằng chứng đổi label hoặc rollback:
+  - Version 1 (baseline): `a6a260c4e46f434b25897246f760fbf6`
+  - Version 2 (candidate): `6f8390db9bc2c53b6e331a1d8a06d771`
+- Bằng chứng đổi label hoặc rollback: evidence/prompt_rollback1.png (sau rollback) và evidence/prompt_rollback2.png (trước rollback)
 
 ## 5. Dashboard, SLO và alerts
 
@@ -57,4 +59,4 @@ Với mỗi thành viên, ghi rõ nhiệm vụ và link commit/PR tương ứng.
 
 | Thành viên | Phần việc | Commit/PR | Điều đã học |
 |---|---|---|---|
-| | | | |
+| Lê Văn Tuấn (2A202601016) | Tracing & Prompt Version: tạo prompt day13-chat V1/V2 trên Langfuse, gán labels baseline/candidate/production, sinh 81 traces với metadata đầy đủ, thực hiện rollback và lưu evidence | (cập nhật sau khi push) | Cách dùng Langfuse để quản lý prompt version và truy xuất trace theo từng phiên bản |
